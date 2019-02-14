@@ -31,7 +31,7 @@ def load(hostname,metric,timestamp,step,value,counterType,tags):
     return msg
 
 try:
-    #this is your flume metrics http url, you should change is by your flume environment
+    # this is your flume metrics http url, you should change is by your flume environment
     url="http://127.0.0.1:8300/metrics"
     tags="port=8300"
     v=requests.get(url)
@@ -41,33 +41,33 @@ try:
         type=res[key]["Type"]
         if type == "SOURCE":
             for param in ["OpenConnectionCount"]:
-                metric=key.replace("SOURCE.","")+"_"+param
+                metric=key.replace("SOURCE.","flume.source")+"."+param
                 value=float(res[key][param])
                 msg=load(hostname,metric,ts,step,value,GAUGE,tags)
                 payload.append(msg)
 
             for param in ["AppendBatchAcceptedCount", "AppendBatchReceivedCount", "EventAcceptedCount", "AppendReceivedCount", "EventReceivedCount", "AppendAcceptedCount"]:
-                metric=key.replace("SOURCE.","")+"_"+param
+                metric=key.replace("SOURCE.","flume.source")+"_"+param
                 value=float(res[key][param])
                 msg=load(hostname,metric,ts,step,value,COUNTER,tags)
                 payload.append(msg)
 
         elif type == "CHANNEL":
             for param in ["ChannelSize", "ChannelFillPercentage"]:
-                metric=key.replace("CHANNEL.","")+"_"+param
+                metric=key.replace("CHANNEL.","flume.channel")+"."+param
                 value=float(res[key][param])
                 msg=load(hostname,metric,ts,step,value,GAUGE,tags)
                 payload.append(msg)
 
             for param in ["EventPutSuccessCount", "EventPutAttemptCount", "EventTakeSuccessCount", "EventTakeAttemptCount"]:
-                metric=key.replace("CHANNEL.","")+"_"+param
+                metric=key.replace("CHANNEL.","flume.channel")+"."+param
                 value=float(res[key][param])
                 msg=load(hostname,metric,ts,step,value,COUNTER,tags)
                 payload.append(msg)
 
         elif type == "SINK":
             for param in ["BatchCompleteCount", "ConnectionFailedCount", "EventDrainAttemptCount", "ConnectionCreatedCount", "BatchEmptyCount", "ConnectionClosedCount", "EventDrainSuccessCount", "BatchUnderflowCount"]:
-                metric=key.replace("SINK.","")+"_"+param
+                metric=key.replace("SINK.","flume.sink")+"."+param
                 value=float(res[key][param])
                 msg=load(hostname,metric,ts,step,value,COUNTER,tags)
                 payload.append(msg)
