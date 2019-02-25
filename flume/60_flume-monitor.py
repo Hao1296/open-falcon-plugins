@@ -43,7 +43,7 @@ try:
         type = res[key]["Type"]
         if type == "SOURCE":
             for param in ["OpenConnectionCount"]:
-                metric = key.replace("SOURCE.", "flume.source") + "." + param
+                metric = key.replace("SOURCE.", "flume.source.") + "." + param
                 value = float(res[key][param])
                 msg = load(hostname, metric, ts, step, value, GAUGE, tags)
                 payload.append(msg)
