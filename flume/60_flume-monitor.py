@@ -35,7 +35,7 @@ def load(hostname, metric, timestamp, step, value, counterType, tags):
 try:
     # this is your flume metrics http url, you should change is by your flume environment
     url = "http://127.0.0.1:8300/metrics"
-    tags = "port=8300"
+    tags = "project=flume"
     v = requests.get(url)
     res = json.loads(v.text)
     payload = []
