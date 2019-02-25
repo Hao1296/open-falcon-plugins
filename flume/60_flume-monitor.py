@@ -1,5 +1,5 @@
 #!/usr/bin/python
-#!-*- coding:utf8 -*-
+# !-*- coding:utf8 -*-
 
 '''
 read flume metrics from flume JSON Reporting
@@ -11,14 +11,15 @@ import json
 import time
 import socket
 
-hostname=socket.gethostname()
-ts=int(time.time())
-step=60
-GAUGE="GAUGE"
-COUNTER="COUNTER"
+hostname = socket.gethostname()
+ts = int(time.time())
+step = 60
+GAUGE = "GAUGE"
+COUNTER = "COUNTER"
 
-def load(hostname,metric,timestamp,step,value,counterType,tags):
-    msg={
+
+def load(hostname, metric, timestamp, step, value, counterType, tags):
+    msg = {
         "endpoint": hostname,
         "metric": metric,
         "timestamp": timestamp,
@@ -26,53 +27,58 @@ def load(hostname,metric,timestamp,step,value,counterType,tags):
         "value": value,
         "counterType": counterType,
         "tags": tags,
-        }
+    }
 
     return msg
 
+
 try:
     # this is your flume metrics http url, you should change is by your flume environment
-    url="http://127.0.0.1:8300/metrics"
-    tags="port=8300"
-    v=requests.get(url)
-    res=json.loads(v.text)
-    payload=[]
+    url = "http://127.0.0.1:8300/metrics"
+    tags = "port=8300"
+    v = requests.get(url)
+    res = json.loads(v.text)
+    payload = []
     for key in res:
-        type=res[key]["Type"]
+        type = res[key]["Type"]
         if type == "SOURCE":
             for param in ["OpenConnectionCount"]:
-                metric=key.replace("SOURCE.","flume.source")+"."+param
-                value=float(res[key][param])
-                msg=load(hostname,metric,ts,step,value,GAUGE,tags)
+                metric = key.replace("SOURCE.", "flume.source") + "." + param
+                value = float(res[key][param])
+                msg = load(hostname, metric, ts, step, value, GAUGE, tags)
                 payload.append(msg)
 
-            for param in ["AppendBatchAcceptedCount", "AppendBatchReceivedCount", "EventAcceptedCount", "AppendReceivedCount", "EventReceivedCount", "AppendAcceptedCount"]:
-                metric=key.replace("SOURCE.","flume.source")+"_"+param
-                value=float(res[key][param])
-                msg=load(hostname,metric,ts,step,value,COUNTER,tags)
+            for param in ["AppendBatchAcceptedCount", "AppendBatchReceivedCount", "EventAcceptedCount",
+                          "AppendReceivedCount", "EventReceivedCount", "AppendAcceptedCount"]:
+                metric = key.replace("SOURCE.", "flume.source.") + "_" + param
+                value = float(res[key][param])
+                msg = load(hostname, metric, ts, step, value, COUNTER, tags)
                 payload.append(msg)
 
         elif type == "CHANNEL":
             for param in ["ChannelSize", "ChannelFillPercentage"]:
-                metric=key.replace("CHANNEL.","flume.channel")+"."+param
-                value=float(res[key][param])
-                msg=load(hostname,metric,ts,step,value,GAUGE,tags)
+                metric = key.replace("CHANNEL.", "flume.channel.") + "." + param
+                value = float(res[key][param])
+                msg = load(hostname, metric, ts, step, value, GAUGE, tags)
                 payload.append(msg)
 
-            for param in ["EventPutSuccessCount", "EventPutAttemptCount", "EventTakeSuccessCount", "EventTakeAttemptCount"]:
-                metric=key.replace("CHANNEL.","flume.channel")+"."+param
-                value=float(res[key][param])
-                msg=load(hostname,metric,ts,step,value,COUNTER,tags)
+            for param in ["EventPutSuccessCount", "EventPutAttemptCount", "EventTakeSuccessCount",
+                          "EventTakeAttemptCount"]:
+                metric = key.replace("CHANNEL.", "flume.channel.") + "." + param
+                value = float(res[key][param])
+                msg = load(hostname, metric, ts, step, value, COUNTER, tags)
                 payload.append(msg)
 
         elif type == "SINK":
-            for param in ["BatchCompleteCount", "ConnectionFailedCount", "EventDrainAttemptCount", "ConnectionCreatedCount", "BatchEmptyCount", "ConnectionClosedCount", "EventDrainSuccessCount", "BatchUnderflowCount"]:
-                metric=key.replace("SINK.","flume.sink")+"."+param
-                value=float(res[key][param])
-                msg=load(hostname,metric,ts,step,value,COUNTER,tags)
+            for param in ["BatchCompleteCount", "ConnectionFailedCount", "EventDrainAttemptCount",
+                          "ConnectionCreatedCount", "BatchEmptyCount", "ConnectionClosedCount",
+                          "EventDrainSuccessCount", "BatchUnderflowCount"]:
+                metric = key.replace("SINK.", "flume.sink.") + "." + param
+                value = float(res[key][param])
+                msg = load(hostname, metric, ts, step, value, COUNTER, tags)
                 payload.append(msg)
 
     print json.dumps(payload)
-    #r = requests.post("http://127.0.0.1:1988/v1/push", data=json.dumps(payload))
-except Exception,e:
+    # r = requests.post("http://127.0.0.1:1988/v1/push", data=json.dumps(payload))
+except Exception, e:
     print e
