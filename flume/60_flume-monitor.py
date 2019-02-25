@@ -50,7 +50,7 @@ try:
 
             for param in ["AppendBatchAcceptedCount", "AppendBatchReceivedCount", "EventAcceptedCount",
                           "AppendReceivedCount", "EventReceivedCount", "AppendAcceptedCount"]:
-                metric = key.replace("SOURCE.", "flume.source.") + "_" + param
+                metric = key.replace("SOURCE.", "flume.source.") + "." + param
                 value = float(res[key][param])
                 msg = load(hostname, metric, ts, step, value, COUNTER, tags)
                 payload.append(msg)
