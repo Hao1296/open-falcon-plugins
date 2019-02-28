@@ -45,7 +45,7 @@ try:
             for param in ["KafkaCommitTimer", "KafkaEventGetTimer", "OpenConnectionCount"]:
                 if param not in res[key]:
                     continue
-                metric = key.replace("SOURCE.", "flume.monitorDemo.source.") + "." + param
+                metric = key.replace("SOURCE.", "flume.source.") + "." + param
                 value = float(res[key][param])
                 msg = load(hostname, metric, ts, step, value, GAUGE, tags)
                 payload.append(msg)
@@ -55,7 +55,7 @@ try:
                           "EventReceivedCount", "GenericProcessingFail", "KafkaEmptyCount"]:
                 if param not in res[key]:
                     continue
-                metric = key.replace("SOURCE.", "flume.monitorDemo.source.") + "." + param
+                metric = key.replace("SOURCE.", "flume.source.") + "." + param
                 value = float(res[key][param])
                 msg = load(hostname, metric, ts, step, value, COUNTER, tags)
                 payload.append(msg)
@@ -65,7 +65,7 @@ try:
                           "KafkaEventGetTimer", "KafkaEventSendTimer", "Open", "Unhealthy"]:
                 if param not in res[key]:
                     continue
-                metric = key.replace("CHANNEL.", "flume.monitorDemo.channel.") + "." + param
+                metric = key.replace("CHANNEL.", "flume.channel.") + "." + param
                 value = float(res[key][param])
                 msg = load(hostname, metric, ts, step, value, GAUGE, tags)
                 payload.append(msg)
@@ -76,7 +76,7 @@ try:
                           ]:
                 if param not in res[key]:
                     continue
-                metric = key.replace("CHANNEL.", "flume.monitorDemo.channel.") + "." + param
+                metric = key.replace("CHANNEL.", "flume.channel.") + "." + param
                 value = float(res[key][param])
                 msg = load(hostname, metric, ts, step, value, COUNTER, tags)
                 payload.append(msg)
@@ -85,7 +85,7 @@ try:
             for param in ["KafkaEventSendTimer"]:
                 if param not in res[key]:
                     continue
-                metric = key.replace("SINK.", "flume.monitorDemo.sink.") + "." + param
+                metric = key.replace("SINK.", "flume.sink.") + "." + param
                 value = float(res[key][param])
                 msg = load(hostname, metric, ts, step, value, GAUGE, tags)
                 payload.append(msg)
@@ -95,7 +95,7 @@ try:
                           "EventDrainAttemptCount", "EventDrainSuccessCount", "EventWriteFail", "RollbackCount"]:
                 if param not in res[key]:
                     continue
-                metric = key.replace("SINK.", "flume.monitorDemo.sink.") + "." + param
+                metric = key.replace("SINK.", "flume.sink.") + "." + param
                 value = float(res[key][param])
                 msg = load(hostname, metric, ts, step, value, COUNTER, tags)
                 payload.append(msg)
