@@ -42,43 +42,52 @@ try:
     for key in res:
         type = res[key]["Type"]
         if type == "SOURCE":
-            for param in ["OpenConnectionCount"]:
+            for param in ["KafkaCommitTimer", "KafkaEventGetTimer", "OpenConnectionCount"]:
                 metric = key.replace("SOURCE.", "flume.source.") + "." + param
                 value = float(res[key][param])
                 msg = load(hostname, metric, ts, step, value, GAUGE, tags)
                 payload.append(msg)
 
-            for param in ["AppendBatchAcceptedCount", "AppendBatchReceivedCount", "EventAcceptedCount",
-                          "AppendReceivedCount", "EventReceivedCount", "AppendAcceptedCount"]:
+            for param in ["AppendAcceptedCount", "AppendBatchAcceptedCount", "AppendBatchReceivedCount",
+                          "AppendReceivedCount",  "ChannelWriteFail", "EventAcceptedCount", "EventReadFail",
+                          "EventReceivedCount", "GenericProcessingFail", "KafkaEmptyCount"]:
                 metric = key.replace("SOURCE.", "flume.source.") + "." + param
                 value = float(res[key][param])
                 msg = load(hostname, metric, ts, step, value, COUNTER, tags)
                 payload.append(msg)
 
         elif type == "CHANNEL":
-            for param in ["ChannelSize", "ChannelFillPercentage"]:
+            for param in ["ChannelCapacity", "ChannelSize", "ChannelFillPercentage", "KafkaCommitTimer",
+                          "KafkaEventGetTimer", "KafkaEventSendTimer", "Open", "Unhealthy"]:
                 metric = key.replace("CHANNEL.", "flume.channel.") + "." + param
                 value = float(res[key][param])
                 msg = load(hostname, metric, ts, step, value, GAUGE, tags)
                 payload.append(msg)
 
-            for param in ["EventPutSuccessCount", "EventPutAttemptCount", "EventTakeSuccessCount",
-                          "EventTakeAttemptCount"]:
+            for param in ["CheckpointBackupWriteErrorCount", "CheckpointWriteErrorCount",
+                          "EventPutAttemptCount", "EventPutErrorCount", "EventPutSuccessCount",
+                          "EventTakeAttemptCount", "EventTakeErrorCount", "EventTakeSuccessCount", "RollbackCounter"
+                          ]:
                 metric = key.replace("CHANNEL.", "flume.channel.") + "." + param
                 value = float(res[key][param])
                 msg = load(hostname, metric, ts, step, value, COUNTER, tags)
                 payload.append(msg)
 
         elif type == "SINK":
-            for param in ["BatchCompleteCount", "ConnectionFailedCount", "EventDrainAttemptCount",
-                          "ConnectionCreatedCount", "BatchEmptyCount", "ConnectionClosedCount",
-                          "EventDrainSuccessCount", "BatchUnderflowCount"]:
+            for param in ["KafkaEventSendTimer"]:
+                metric = key.replace("SINK.", "flume.sink.") + "." + param
+                value = float(res[key][param])
+                msg = load(hostname, metric, ts, step, value, GAUGE, tags)
+                payload.append(msg)
+
+            for param in ["BatchCompleteCount", "BatchEmptyCount", "BatchUnderflowCount", "ChannelReadFail",
+                          "ConnectionClosedCount", "ConnectionCreatedCount", "ConnectionFailedCount",
+                          "EventDrainAttemptCount", "EventDrainSuccessCount", "EventWriteFail", "RollbackCount"]:
                 metric = key.replace("SINK.", "flume.sink.") + "." + param
                 value = float(res[key][param])
                 msg = load(hostname, metric, ts, step, value, COUNTER, tags)
                 payload.append(msg)
 
     print json.dumps(payload)
-    # r = requests.post("http://127.0.0.1:1988/v1/push", data=json.dumps(payload))
 except Exception, e:
     print e
