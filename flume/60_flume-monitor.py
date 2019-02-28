@@ -43,6 +43,8 @@ try:
         type = res[key]["Type"]
         if type == "SOURCE":
             for param in ["KafkaCommitTimer", "KafkaEventGetTimer", "OpenConnectionCount"]:
+                if param not in res[key]:
+                    continue
                 metric = key.replace("SOURCE.", "flume.source.") + "." + param
                 value = float(res[key][param])
                 msg = load(hostname, metric, ts, step, value, GAUGE, tags)
@@ -51,6 +53,8 @@ try:
             for param in ["AppendAcceptedCount", "AppendBatchAcceptedCount", "AppendBatchReceivedCount",
                           "AppendReceivedCount",  "ChannelWriteFail", "EventAcceptedCount", "EventReadFail",
                           "EventReceivedCount", "GenericProcessingFail", "KafkaEmptyCount"]:
+                if param not in res[key]:
+                    continue
                 metric = key.replace("SOURCE.", "flume.source.") + "." + param
                 value = float(res[key][param])
                 msg = load(hostname, metric, ts, step, value, COUNTER, tags)
@@ -59,6 +63,8 @@ try:
         elif type == "CHANNEL":
             for param in ["ChannelCapacity", "ChannelSize", "ChannelFillPercentage", "KafkaCommitTimer",
                           "KafkaEventGetTimer", "KafkaEventSendTimer", "Open", "Unhealthy"]:
+                if param not in res[key]:
+                    continue
                 metric = key.replace("CHANNEL.", "flume.channel.") + "." + param
                 value = float(res[key][param])
                 msg = load(hostname, metric, ts, step, value, GAUGE, tags)
@@ -68,6 +74,8 @@ try:
                           "EventPutAttemptCount", "EventPutErrorCount", "EventPutSuccessCount",
                           "EventTakeAttemptCount", "EventTakeErrorCount", "EventTakeSuccessCount", "RollbackCounter"
                           ]:
+                if param not in res[key]:
+                    continue
                 metric = key.replace("CHANNEL.", "flume.channel.") + "." + param
                 value = float(res[key][param])
                 msg = load(hostname, metric, ts, step, value, COUNTER, tags)
@@ -75,6 +83,8 @@ try:
 
         elif type == "SINK":
             for param in ["KafkaEventSendTimer"]:
+                if param not in res[key]:
+                    continue
                 metric = key.replace("SINK.", "flume.sink.") + "." + param
                 value = float(res[key][param])
                 msg = load(hostname, metric, ts, step, value, GAUGE, tags)
@@ -83,6 +93,8 @@ try:
             for param in ["BatchCompleteCount", "BatchEmptyCount", "BatchUnderflowCount", "ChannelReadFail",
                           "ConnectionClosedCount", "ConnectionCreatedCount", "ConnectionFailedCount",
                           "EventDrainAttemptCount", "EventDrainSuccessCount", "EventWriteFail", "RollbackCount"]:
+                if param not in res[key]:
+                    continue
                 metric = key.replace("SINK.", "flume.sink.") + "." + param
                 value = float(res[key][param])
                 msg = load(hostname, metric, ts, step, value, COUNTER, tags)
